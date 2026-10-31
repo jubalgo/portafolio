@@ -1,20 +1,28 @@
 // Registro del Service Worker para PWA
-if ('serviceWorker' in navigator) {
-  window.addEventListener('load', () => {
+if ("serviceWorker" in navigator) {
+  window.addEventListener("load", () => {
     navigator.serviceWorker
-      .register('/sw.js')
+      .register("/sw.js")
       .then((registration) => {
-        console.log('✅ Service Worker registrado exitosamente:', registration.scope);
+        console.debug(
+          "Service Worker registrado exitosamente:",
+          registration.scope,
+        );
 
         // Verificar actualizaciones
-        registration.addEventListener('updatefound', () => {
+        registration.addEventListener("updatefound", () => {
           const newWorker = registration.installing;
-          console.log('🔄 Nueva versión del Service Worker encontrada');
+          console.log("Nueva versión del Service Worker encontrada");
 
-          newWorker.addEventListener('statechange', () => {
-            if (newWorker.state === 'installed' && navigator.serviceWorker.controller) {
+          newWorker.addEventListener("statechange", () => {
+            if (
+              newWorker.state === "installed" &&
+              navigator.serviceWorker.controller
+            ) {
               // Hay una nueva versión disponible
-              console.log('✨ Nueva versión disponible. Recarga la página para actualizar.');
+              console.log(
+                "Nueva versión disponible. Recarga la página para actualizar.",
+              );
 
               // Opcional: Mostrar notificación al usuario
               showUpdateNotification();
@@ -23,12 +31,12 @@ if ('serviceWorker' in navigator) {
         });
       })
       .catch((error) => {
-        console.error('❌ Error al registrar Service Worker:', error);
+        console.error(" Error al registrar Service Worker:", error);
       });
 
     // Escuchar cambios en el controlador
-    navigator.serviceWorker.addEventListener('controllerchange', () => {
-      console.log('🔄 Service Worker actualizado, recargando página...');
+    navigator.serviceWorker.addEventListener("controllerchange", () => {
+      console.log(" Service Worker actualizado, recargando página...");
       window.location.reload();
     });
   });
@@ -36,8 +44,8 @@ if ('serviceWorker' in navigator) {
 
 // Función para mostrar notificación de actualización
 function showUpdateNotification() {
-  const updateBanner = document.createElement('div');
-  updateBanner.id = 'pwa-update-banner';
+  const updateBanner = document.createElement("div");
+  updateBanner.id = "pwa-update-banner";
   updateBanner.innerHTML = `
     <div style="
       position: fixed;
@@ -101,35 +109,35 @@ function showUpdateNotification() {
 function updatePWA() {
   navigator.serviceWorker.getRegistration().then((registration) => {
     if (registration && registration.waiting) {
-      registration.waiting.postMessage({ type: 'SKIP_WAITING' });
+      registration.waiting.postMessage({ type: "SKIP_WAITING" });
     }
   });
 }
 
 // Función para descartar notificación de actualización
 function dismissUpdate() {
-  const banner = document.getElementById('pwa-update-banner');
+  const banner = document.getElementById("pwa-update-banner");
   if (banner) {
-    banner.style.animation = 'slideDown 0.3s ease-out';
+    banner.style.animation = "slideDown 0.3s ease-out";
     setTimeout(() => banner.remove(), 300);
   }
 }
 
 // Detectar si la app está instalada
-window.addEventListener('appinstalled', () => {
-  console.log('✅ PWA instalada exitosamente');
+window.addEventListener("appinstalled", () => {
+  console.log("PWA instalada exitosamente");
   // Opcional: Mostrar mensaje de agradecimiento
-  showSnackbar('¡Gracias por instalar mi portafolio! 🎉');
+  showSnackbar("¡Gracias por instalar mi portafolio! 🎉");
 });
 
 // Mostrar prompt de instalación (si está disponible)
 let deferredPrompt;
 
-window.addEventListener('beforeinstallprompt', (e) => {
+window.addEventListener("beforeinstallprompt", (e) => {
   // Prevenir que Chrome muestre el prompt automáticamente
   e.preventDefault();
   deferredPrompt = e;
-  console.log('💡 La aplicación puede ser instalada');
+  console.log("La aplicación puede ser instalada");
 
   // Opcional: Mostrar botón de instalación personalizado
   showInstallButton();
@@ -139,7 +147,7 @@ window.addEventListener('beforeinstallprompt', (e) => {
 function showInstallButton() {
   // Aquí puedes agregar un botón personalizado para instalar la PWA
   // Por ahora solo lo registramos en consola
-  console.log('📱 Botón de instalación disponible');
+  console.log("Botón de instalación disponible");
 }
 
 // Función para disparar instalación manualmente (si implementas botón)
@@ -147,10 +155,10 @@ function installPWA() {
   if (deferredPrompt) {
     deferredPrompt.prompt();
     deferredPrompt.userChoice.then((choiceResult) => {
-      if (choiceResult.outcome === 'accepted') {
-        console.log('✅ Usuario aceptó la instalación');
+      if (choiceResult.outcome === "accepted") {
+        console.log("Usuario aceptó la instalación");
       } else {
-        console.log('❌ Usuario rechazó la instalación');
+        console.log("Usuario rechazó la instalación");
       }
       deferredPrompt = null;
     });
@@ -159,12 +167,12 @@ function installPWA() {
 
 // Función auxiliar para mostrar mensajes (usa tu showSnackbar existente)
 function showSnackbar(message) {
-  const snackbar = document.getElementById('snackbar');
+  const snackbar = document.getElementById("snackbar");
   if (snackbar) {
     snackbar.textContent = message;
-    snackbar.className = 'show';
+    snackbar.className = "show";
     setTimeout(() => {
-      snackbar.className = snackbar.className.replace('show', '');
+      snackbar.className = snackbar.className.replace("show", "");
     }, 4000);
   }
 }
